@@ -13,8 +13,12 @@ server = 'ws://localhost:9000'
 agente = None
 
 def do_minimax(tableroActual):
-	x, y = agente.mi_turno(tableroActual)
-	return x, y
+	__turno = agente.mi_turno(tableroActual)
+	print(__turno)
+	return __turno[0], __turno[1], __turno[2]
+	# y, x = agente.mi_turno(tableroActual)
+	# print(f'\n\n Voy a tirar en [{y}][{x}]\n\n')
+	# return y, x
 
 # Funciones del websocket
 def on_message(ws, message):
@@ -48,8 +52,7 @@ def on_message(ws, message):
 			turno = message["turno"]
 			matriz = message["matriz"]
 			print("mi turno id: " + str(my_id) + " " + str(turno))
-			x, y = do_minimax(matriz)
-			ganador = agente.gana(matriz, my_id)
+			y, x, ganador = do_minimax(matriz)
 			# ganador = agente.puede_ganar(matriz, my_id)
 			# agente.update_tablero(matriz)
 			print("\n")

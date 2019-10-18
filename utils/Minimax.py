@@ -43,23 +43,23 @@ class Minimax:
 
 	def casillas_vacias(self, tablero):
 		vacias = []
-		for row in range(3):
-			for col in range(3):
-				if tablero[row][col] == '-':
-					vacias.append((row, col))  # X, Y ( Tupla )
+		for col in range(3):
+			for row in range(3):
+				if tablero[col][row] == '-':
+					vacias.append((col, row))  # X, Y ( Tupla )
 		return vacias
 
-	def movimiento_valido(self, x, y, tablero):
-		if (x,y) in self.casillas_vacias(tablero):
+	def movimiento_valido(self, y, x, tablero):
+		if (y,x) in self.casillas_vacias(tablero):
 			return True
 		else:
 			return False
 
-	def tirar(self, x, y, tablero):
-		if self.movimiento_valido(x, y, tablero):
-			return x,y, True
+	def tirar(self, y, x, tablero):
+		if self.movimiento_valido(y, x, tablero):
+			return y,x, True
 		else:
-			return x, y, False  # No puede tirar ahí
+			return y, x, False  # No puede tirar ahí
 
 	def minimax(self, tablero, profundidad, turno):
 		if turno == self.turno:
@@ -70,14 +70,12 @@ class Minimax:
 		if profundidad == 0 or self.game_over(tablero):
 			puntaje = self.evaluar(tablero)
 			return [-1, -1, puntaje]
-
-		print(self.casillas_vacias(tablero))
 		for casilla in self.casillas_vacias(tablero):
-			x,y = casilla  # Tupla
-			tablero[x][y] = turno
+			y,x = casilla  # Tupla
+			tablero[y][x] = turno
 			puntaje = self.minimax(tablero, profundidad-1, -turno)
-			tablero[x][y] = '-'
-			puntaje[0], puntaje[1] = x, y
+			tablero[y][x] = '-'
+			puntaje[1], puntaje[0] = y, x
 
 			if turno == self.turno:
 				if puntaje[2] > mejor[2]:
@@ -89,9 +87,21 @@ class Minimax:
 
 	def mi_turno(self, tablero):
 		profundidad = len(self.casillas_vacias(tablero))
-		print(profundidad)
 		if profundidad == 0 or self.game_over(tablero):
-			return
+			movimiento = self.minimax(tablero, profundidad, self.turno)
+			print(movimiento)
+			y, x = movimiento[1], movimiento[0]
+			if y == -1 and x == -1:
+				# random entre los libres
+				try:
+					print('TRY')
+					y, x = choice(self.casillas_vacias(tablero))
+					print(y)
+					print(x)
+				except Exception:
+					print('Excepcion')
+					print(self.casillas_vacias(tablero)[0])
+					y, x = self.casillas_vacias(tablero)[0]
 
 		if profundidad == 9:
 			# Como es el primer tiro, elige una casilla de las 9 al azar, tanto para X como para Y
@@ -99,6 +109,16 @@ class Minimax:
 			y = choice([0, 1, 2])
 		else:
 			movimiento = self.minimax(tablero, profundidad, self.turno)
-			print(movimiento)
-			x, y = movimiento[0], movimiento[1]
-		return x, y
+			y, x = movimiento[1], movimiento[0]
+			if y == -1 and x == -1:
+				# random entre los libres
+				try:
+					print('TRY')
+					y, x = choice(self.casillas_vacias(tablero))
+					print(y)
+					print(x)
+				except Exception:
+					print('Excepcion')
+					print(self.casillas_vacias(tablero))
+					y, x = self.casillas_vacias(tablero)[0]
+		return y, x, self.gana(tablero, self.turno)
