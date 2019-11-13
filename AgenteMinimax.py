@@ -1,6 +1,5 @@
 from tkinter import ttk, font
 from tkinter import messagebox
-# from utils.Minimax import Minimax
 from utils.Minimax2 import Minimax
 from tkinter import *
 import websocket
@@ -15,9 +14,6 @@ def do_minimax(tableroActual):
     __turno = agente.mi_turno(tableroActual)
     print(__turno)
     return __turno[0], __turno[1], __turno[2]
-    # y, x = agente.mi_turno(tableroActual)
-    # print(f'\n\n Voy a tirar en [{y}][{x}]\n\n')
-    # return y, x
 
 
 def on_message(ws, message):
@@ -51,25 +47,15 @@ def on_message(ws, message):
             matriz = message["matriz"]
             print("mi turno id: " + str(my_id) + " " + str(turno))
             peso, y, x = agente.minimax(matriz)
-            matriz[y][x] = my_id
             ganador = agente.determinar_ganador(matriz, my_id)
             agente.setMaximizar()
-            # y, x, ganador = do_minimax(matriz)
             print("\n")
             for row in matriz:
                 print(f"{row}")
             print("\n")
-            #
             # envio mi posicion de tiro
             my_message = json.dumps({"x": x, "y": y, "ganador": ganador, "id": my_id})
             ws.send(my_message)
-            # proceso de acuerdo a mis reglas
-            # minimax, x, y = agente.minimax()
-            # if minimax != None and x != None and y != None:
-            #   print(f'Minimax => {minimax}, x => {y}, y => {x}')
-            #   # envio mi posicion de tiro
-            #   my_message = json.dumps({"x": y, "y": x, "ganador": ganador, "id": my_id})
-            #   ws.send(my_message)
 
 
 def on_error(ws, error):
@@ -91,6 +77,3 @@ if __name__ == "__main__":
     ws = websocket.WebSocketApp(server, on_message=on_message, on_error=on_error, on_close=on_close)
     ws.on_open = on_open
     ws.run_forever()
-    # tablero = [['-' for _ in range(3)] for _ in range(3)]
-    # root = Node(tablero)  # Tablero inicial
-    # print(root.casillasVacias())
