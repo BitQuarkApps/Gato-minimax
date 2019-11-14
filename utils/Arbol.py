@@ -28,6 +28,18 @@ class Nodo:
 		Fijar el valor de y
 		"""
 		self.y = y
+
+	def get_y(self):
+		"""
+		Regresar la coordenada Y
+		"""
+		return self.y
+	
+	def get_x(self):
+		"""
+		Regresar la coordenada X
+		"""
+		return self.x
 	
 	def agregar_hijo(self, nodo):
 		"""
@@ -42,7 +54,16 @@ class Nodo:
 		return self.children
 
 	def set_peso(self, peso):
+		"""
+		Establecer el peso asignado según la métrica
+		"""
 		self.peso = peso
+
+	def get_peso(self):
+		"""
+		Obtener el peso asignado según la métrica
+		"""
+		return self.peso
 
 	def show(self):
 		print(f'X => {self.x}, Y => {self.y}, peso => {self.peso}')

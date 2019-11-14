@@ -1,4 +1,5 @@
 from .Arbol import Nodo
+import math
 
 class Minimax:
 	def __init__(self, my_id):
@@ -140,9 +141,8 @@ class Minimax:
 			return True
 		return False
 
-	def minimax(self, tablero):
+	def minimax(self, tablero, copia):
 		nodoPadre = Nodo()
-		backup = tablero
 		copia_tablero = tablero
 		# Iterar cada casilla disponible
 		for casilla in self.obtener_casillas_vacias(copia_tablero):
@@ -158,53 +158,51 @@ class Minimax:
 			copia_tablero[y][x] = self.turno # Simulo mi tiro
 			# Simular tiro del oponente con base en los hijos del nodo padre creado arriba
 			_restantes = self.obtener_casillas_vacias(copia_tablero)
-			print(_restantes)
 			for _r in _restantes:
-				_y, _x = _r
-				hijo_nodo_casilla_disponible = Nodo()
-				hijo_nodo_casilla_disponible.set_root(nodo_casilla_disponible)
-				nodo_casilla_disponible.agregar_hijo(hijo_nodo_casilla_disponible)
-				hijo_nodo_casilla_disponible.set_x(_x)
-				hijo_nodo_casilla_disponible.set_y(_y)
+				_y, _x = _r # X, Y de la casilla libre
+				hijo_nodo_casilla_disponible = Nodo() # Nuevo nodo
+				hijo_nodo_casilla_disponible.set_root(nodo_casilla_disponible) # Padre del nuevo nodo
+				nodo_casilla_disponible.agregar_hijo(hijo_nodo_casilla_disponible) # Agregar el nuevo nodo como hijo del nodo anterior
+				hijo_nodo_casilla_disponible.set_x(_x) # Ajuste de X
+				hijo_nodo_casilla_disponible.set_y(_y) # Ajuste de Y
 				_peso = self.evaluar_jugadas_posibles(copia_tablero, _y, _x, self.oponente) # Obtener la métrica del peso
-				hijo_nodo_casilla_disponible.set_peso(_peso)
-				# _copia_restantes[_y][_x] = self.oponente # Simula el tiro del oponente
-		print('Tablero:\n')
-		print(backup)
-		print('\n')
+				hijo_nodo_casilla_disponible.set_peso(_peso) # Fijar el peso para su evaluación
 		hijos = nodoPadre.obtener_hijos()
-		print('Hijos raiz:\n')
-		for hijo in hijos:
-			hijo.show()
-			nietos = hijo.obtener_hijos()
-			print('Nietos =>')
-			for n in nietos:
-				n.show()
-		print('\n')
-		# vacias = self.obtener_casillas_vacias(tablero)
-		# pesos = []  # tendrá una tupla (peso, y, x)
-		# for casilla in vacias:
-		# 	y, x = casilla
-		# 	if self.maximiza:
-		# 		peso = self.evaluar_jugadas_posibles(tablero, y, x, self.turno)
-		# 	else:
-		# 		peso = self.evaluar_jugadas_posibles(tablero, y, x, self.oponente)
-		# 	pesos.append((peso, y, x))
 
-		# # Si maximizar, entonces ordenar del mayor al menor
-		# if self.maximiza:
-		# 	print("Maximizando:\n\n")
-		# 	pesos.sort(reverse=True, key=self.takeOnlyScore)
-		# 	_peso, _y, _x = pesos[0]
-		# 	print(f'Y => {_y}')
-		# 	print(f'X => {_x}')
-		# 	print(f'Peso => {_peso}')
-		# 	return pesos[0]
-		# else:
-		# 	print("Minimizando:\n\n")
-		# 	pesos.sort(key=self.takeOnlyScore)
-		# 	_peso, _y, _x = pesos[0]
-		# 	print(f'Y => {_y}')
-		# 	print(f'X => {_x}')
-		# 	print(f'Peso => {_peso}')
-		# 	return pesos[0]
+
+		"""
+		███╗   ███╗    ██╗    ███╗   ██╗    ██╗    ███╗   ███╗    ██╗    ███████╗     █████╗     ██████╗ 
+		████╗ ████║    ██║    ████╗  ██║    ██║    ████╗ ████║    ██║    ╚══███╔╝    ██╔══██╗    ██╔══██╗
+		██╔████╔██║    ██║    ██╔██╗ ██║    ██║    ██╔████╔██║    ██║      ███╔╝     ███████║    ██████╔╝
+		██║╚██╔╝██║    ██║    ██║╚██╗██║    ██║    ██║╚██╔╝██║    ██║     ███╔╝      ██╔══██║    ██╔══██╗
+		██║ ╚═╝ ██║    ██║    ██║ ╚████║    ██║    ██║ ╚═╝ ██║    ██║    ███████╗    ██║  ██║    ██║  ██║
+		╚═╝     ╚═╝    ╚═╝    ╚═╝  ╚═══╝    ╚═╝    ╚═╝     ╚═╝    ╚═╝    ╚══════╝    ╚═╝  ╚═╝    ╚═╝  ╚═╝
+		"""
+		minimo = math.inf # Valor muy grande para la primera iteracion
+		for hijo in hijos:
+			nietos = hijo.obtener_hijos()
+			for n in nietos:
+				if n.get_peso() < minimo:
+					minimo = n.get_peso()
+			# En el caso de que el nodo no tenga hijos, se le asigna Infinito, lo cual estaría siendo
+			# considerado como el mayor, para evitarlo, se deja el peso asignado por la métrica
+			if minimo != math.inf:
+				hijo.set_peso(minimo)  # Asignar el peso mínimo
+				minimo = math.inf      # Reiniciar el mínimo a Infinito
+		"""
+		███╗   ███╗     █████╗     ██╗  ██╗    ██╗    ███╗   ███╗    ██╗    ███████╗     █████╗     ██████╗ 
+		████╗ ████║    ██╔══██╗    ╚██╗██╔╝    ██║    ████╗ ████║    ██║    ╚══███╔╝    ██╔══██╗    ██╔══██╗
+		██╔████╔██║    ███████║     ╚███╔╝     ██║    ██╔████╔██║    ██║      ███╔╝     ███████║    ██████╔╝
+		██║╚██╔╝██║    ██╔══██║     ██╔██╗     ██║    ██║╚██╔╝██║    ██║     ███╔╝      ██╔══██║    ██╔══██╗
+		██║ ╚═╝ ██║    ██║  ██║    ██╔╝ ██╗    ██║    ██║ ╚═╝ ██║    ██║    ███████╗    ██║  ██║    ██║  ██║
+		╚═╝     ╚═╝    ╚═╝  ╚═╝    ╚═╝  ╚═╝    ╚═╝    ╚═╝     ╚═╝    ╚═╝    ╚══════╝    ╚═╝  ╚═╝    ╚═╝  ╚═╝
+		"""
+
+		maximo = -math.inf
+		nodo_maximo = None
+		for nodo in hijos:
+			if nodo.get_peso() > maximo:  # Es el de mayor peso?
+				maximo = nodo.get_peso()  # Asignar un nuevo peso
+				nodo_maximo = nodo        # Acceso rápido al nodo mayor
+		print(f"X => {nodo_maximo.get_x()}, Y => {nodo_maximo.get_y()}, PESO => {nodo_maximo.get_peso()}")
+		return nodo_maximo.get_peso(), nodo_maximo.get_y(), nodo_maximo.get_x()
