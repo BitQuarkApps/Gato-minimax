@@ -117,7 +117,7 @@ class Minimax:
 		elif tablero[y][x] == turno:
 			return True
 		return False
-
+ 
 	def takeOnlyScore(self, elem):
 		return elem[0]
 
@@ -163,6 +163,7 @@ class Minimax:
 				_y, _x = _r
 				hijo_nodo_casilla_disponible = Nodo()
 				hijo_nodo_casilla_disponible.set_root(nodo_casilla_disponible)
+				nodo_casilla_disponible.agregar_hijo(hijo_nodo_casilla_disponible)
 				hijo_nodo_casilla_disponible.set_x(_x)
 				hijo_nodo_casilla_disponible.set_y(_y)
 				_peso = self.evaluar_jugadas_posibles(copia_tablero, _y, _x, self.oponente) # Obtener la métrica del peso

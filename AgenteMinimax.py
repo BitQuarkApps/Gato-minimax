@@ -6,7 +6,7 @@ import websocket
 import json
 
 my_id = None  # Puede tomar 0 o 1
-server = 'ws://localhost:9000'
+server = 'ws://192.168.0.29:9000'
 agente = None
 
 
