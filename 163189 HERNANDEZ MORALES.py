@@ -7,7 +7,7 @@ import json
 import copy
 
 my_id = None  # Puede tomar 0 o 1
-server = 'ws://172.20.10.3:9000'
+server = 'ws://localhost:9000'
 agente = None
 
 def on_message(ws, message):

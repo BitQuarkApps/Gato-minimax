@@ -167,7 +167,22 @@ class Minimax:
 				hijo_nodo_casilla_disponible.set_y(_y) # Ajuste de Y
 				_peso = self.evaluar_jugadas_posibles(copia_tablero, _y, _x, self.oponente) # Obtener la métrica del peso
 				hijo_nodo_casilla_disponible.set_peso(_peso) # Fijar el peso para su evaluación
+			copia_tablero[y][x] = '-' # Limpio el tiro
 		hijos = nodoPadre.obtener_hijos()
+
+
+		"""
+		Mostrar solo el tercer nivel y los hijos de ese nivel
+		"""
+		tamanio = len(nodoPadre.obtener_hijos())
+		if tamanio == 5:
+			for n in hijos:
+				print(f'X => {n.get_x()}, Y => {n.get_y()}, peso => {n.get_peso()}')
+				print('--- HIJOS ---')
+				_hijos = n.obtener_hijos()
+				for _h in _hijos:
+					print(f'X => {_h.get_x()}, Y => {_h.get_y()}, peso => {_h.get_peso()}')
+				print('-------------')
 
 
 		"""
